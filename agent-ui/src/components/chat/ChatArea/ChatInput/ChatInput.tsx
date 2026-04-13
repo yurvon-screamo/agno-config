@@ -39,7 +39,7 @@ function formatFileSize(bytes: number): string {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-function getFileIcon(fileName: string): string {
+function getFileIcon(fileName: string): 'sheet' {
     const ext = fileName.split('.').pop()?.toLowerCase() ?? ''
     if (['pdf'].includes(ext)) return 'sheet'
     if (['doc', 'docx'].includes(ext)) return 'sheet'
@@ -117,7 +117,7 @@ const ChatInput = () => {
             }
         } catch (error) {
             toast.error(
-                `Error in handleSubmit: ${error instanceof Error ? error.message : String(error)
+                `Ошибка при отправке: ${error instanceof Error ? error.message : String(error)
                 }`
             )
         }
@@ -133,7 +133,7 @@ const ChatInput = () => {
                             key={id}
                             className="group flex items-center gap-1.5 rounded-lg border border-accent bg-primaryAccent px-2.5 py-1.5 text-xs text-secondary"
                         >
-                            <Icon type={getFileIcon(file.name) as any} size="xs" className="text-muted" />
+                            <Icon type={getFileIcon(file.name)} size="xs" className="text-muted" />
                             <span className="max-w-[150px] truncate">{file.name}</span>
                             <span className="text-muted">{formatFileSize(file.size)}</span>
                             <button
@@ -169,7 +169,7 @@ const ChatInput = () => {
                     <Icon type="paperclip" size="sm" />
                 </Button>
                 <TextArea
-                    placeholder={'Ask anything'}
+                    placeholder={'Задайте вопрос'}
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={(e) => {

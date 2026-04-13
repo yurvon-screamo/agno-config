@@ -24,11 +24,11 @@ const AgentMessage = ({ message }: MessageProps) => {
     if (message.streamingError) {
         messageContent = (
             <p className="text-destructive">
-                Oops! Something went wrong while streaming.{' '}
+                Упс! Что-то пошло не так при потоковой передаче.{' '}
                 {streamingErrorMessage ? (
                     <>{streamingErrorMessage}</>
                 ) : (
-                    'Please try refreshing the page or try again later.'
+                    'Попробуйте обновить страницу или повторить позже.'
                 )}
             </p>
         )

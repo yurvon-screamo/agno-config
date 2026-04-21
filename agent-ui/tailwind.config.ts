@@ -20,7 +20,11 @@ export default {
         },
         secondary: '#f5f5f5',
         border: 'rgba(var(--color-border-default))',
-        accent: '#27272A',
+        accent: {
+          DEFAULT: '#27272A',
+          hover: '#2E2E32'
+        },
+        'surface-hover': '#1F1F23',
         muted: '#A1A1AA',
         destructive: '#E53935',
         positive: '#22C55E'

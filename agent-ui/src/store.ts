@@ -13,16 +13,6 @@ interface Store {
     setHydrated: () => void
     streamingErrorMessage: string
     setStreamingErrorMessage: (streamingErrorMessage: string) => void
-    endpoints: {
-        endpoint: string
-        id__endpoint: string
-    }[]
-    setEndpoints: (
-        endpoints: {
-            endpoint: string
-            id__endpoint: string
-        }[]
-    ) => void
     isStreaming: boolean
     setIsStreaming: (isStreaming: boolean) => void
     isEndpointActive: boolean
@@ -53,6 +43,11 @@ interface Store {
     ) => void
     isSessionsLoading: boolean
     setIsSessionsLoading: (isSessionsLoading: boolean) => void
+    editingAgent:
+        | { type: 'new' }
+        | { type: 'edit'; componentId: string; name: string; systemMessage: string; toolNames: string[]; sendMediaToModel: boolean }
+        | null
+    setEditingAgent: (agent: Store['editingAgent']) => void
 }
 
 export const useStore = create<Store>()(
@@ -63,8 +58,6 @@ export const useStore = create<Store>()(
             streamingErrorMessage: '',
             setStreamingErrorMessage: (streamingErrorMessage) =>
                 set(() => ({ streamingErrorMessage })),
-            endpoints: [],
-            setEndpoints: (endpoints) => set(() => ({ endpoints })),
             isStreaming: false,
             setIsStreaming: (isStreaming) => set(() => ({ isStreaming })),
             isEndpointActive: false,
@@ -80,7 +73,7 @@ export const useStore = create<Store>()(
                         typeof messages === 'function' ? messages(state.messages) : messages
                 })),
             chatInputRef: { current: null },
-            selectedEndpoint: process.env.NEXT_PUBLIC_AGENT_OS_URL || 'http://localhost:7777',
+            selectedEndpoint: '/api/os',
             setSelectedEndpoint: (selectedEndpoint) =>
                 set(() => ({ selectedEndpoint })),
 
@@ -102,14 +95,14 @@ export const useStore = create<Store>()(
                 })),
             isSessionsLoading: false,
             setIsSessionsLoading: (isSessionsLoading) =>
-                set(() => ({ isSessionsLoading }))
+                set(() => ({ isSessionsLoading })),
+            editingAgent: null,
+            setEditingAgent: (editingAgent) => set(() => ({ editingAgent }))
         }),
         {
             name: 'endpoint-storage',
             storage: createJSONStorage(() => localStorage),
-            partialize: (state) => ({
-                selectedEndpoint: state.selectedEndpoint
-            }),
+            partialize: () => ({}),
             onRehydrateStorage: () => (state) => {
                 state?.setHydrated?.()
             }

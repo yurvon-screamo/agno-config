@@ -1,66 +1,16 @@
-# Caddy configuration for agno-config
-# Serves Next.js static export and proxies API to Python backend
-
-{
-    # Disable admin API in production
-    admin off
-}
-
 :80 {
-    # Root directory for static files
-    root * /app/www
+	handle /health {
+		reverse_proxy 127.0.0.1:8080
+	}
 
-    # Enable compression
-    encode gzip zstd
+	handle /api/os/* {
+		uri strip_prefix /api/os
+		reverse_proxy 127.0.0.1:8080 {
+			flush_interval -1
+		}
+	}
 
-    # Handle WebSocket connections for streaming
-    # MUST come before broad /agents* and /teams* — Caddy evaluates handle blocks in order
-    handle /agents/*/runs {
-        reverse_proxy localhost:7777 {
-            header_up Connection "upgrade"
-            header_up Upgrade "websocket"
-        }
-    }
-
-    handle /teams/*/runs {
-        reverse_proxy localhost:7777 {
-            header_up Connection "upgrade"
-            header_up Upgrade "websocket"
-        }
-    }
-
-    # API proxy — broad matches for AgentOS backend paths
-    handle /agents* {
-        reverse_proxy localhost:7777
-    }
-
-    handle /health {
-        reverse_proxy localhost:7777
-    }
-
-    handle /sessions* {
-        reverse_proxy localhost:7777
-    }
-
-    handle /teams* {
-        reverse_proxy localhost:7777
-    }
-
-    handle /v1* {
-        reverse_proxy localhost:7777
-    }
-
-    # Static file serving with SPA fallback
-    handle {
-        try_files {path} /index.html
-        file_server
-
-        # Cache static assets (must be inside this handle block to take effect)
-        @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2
-        header @static Cache-Control "public, max-age=31536000, immutable"
-
-        # No cache for HTML (SPA needs fresh index.html)
-        @html path *.html /
-        header @html Cache-Control "no-cache, no-store, must-revalidate"
-    }
+	handle {
+		reverse_proxy 127.0.0.1:3000
+	}
 }

@@ -1,0 +1,15 @@
+services:
+  agno:
+    build: .
+    container_name: agno
+    ports:
+      - "${PORT:-3000}:80"
+    env_file:
+      - .env
+    volumes:
+      - agno-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  agno-data:
+    name: agno-data

@@ -1,3 +1,1 @@
-import ChatArea from './ChatArea'
-
-export { ChatArea }
+export { ChatArea } from './ChatArea'
